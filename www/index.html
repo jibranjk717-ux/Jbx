@@ -189,25 +189,34 @@
         const compactMode = document.querySelector('#compact-mode');
         let deferredInstall;
 
-        const replies = [
-            { match: ['plan', 'day', 'organize', 'schedule'], text: 'Let’s keep it simple: choose one must-do, two should-dos, and one small thing that makes the day feel good. Start with the must-do and give it a focused 25-minute block.' },
-            { match: ['idea', 'creative', 'inspiration'], text: 'Try combining two unrelated things you like. For example: a quiet coffee shop and a walking tour becomes a self-guided “sip and stroll” afternoon.' },
-            { match: ['code', 'coding', 'javascript', 'python', 'html', 'bug', 'program'], text: 'A reliable debugging loop is: reproduce the issue, reduce it to the smallest case, inspect the actual values, change one thing, and test again. Share the error or code and I’ll help trace it.' },
-            { match: ['study', 'learn', 'exam', 'school', 'homework'], text: 'Use active recall: close your notes, explain the idea from memory, check the gaps, then repeat later. Short spaced sessions beat one long reread.' },
-            { match: ['write', 'writing', 'essay', 'email', 'grammar'], text: 'Strong writing starts with the reader and the point. State the main idea early, use concrete examples, cut repeated words, and finish with one clear next step.' },
-            { match: ['health', 'exercise', 'sleep', 'food', 'diet'], text: 'For general wellbeing, focus on basics: regular sleep, movement you can sustain, nourishing food, hydration, and professional advice for symptoms or medical decisions. I can help make a simple routine.' },
-            { match: ['money', 'budget', 'save', 'invest', 'finance'], text: 'Start with a clear monthly view: income, fixed costs, flexible spending, and a small emergency buffer. For investing or taxes, verify details with a qualified professional because rules and risk vary.' },
-            { match: ['science', 'physics', 'chemistry', 'biology', 'space'], text: 'Science works by forming testable explanations, comparing them with evidence, and updating beliefs when the evidence changes. Name the topic and I’ll explain it with an analogy first.' },
-            { match: ['travel', 'trip', 'flight', 'hotel', 'visit'], text: 'A good trip plan balances one anchor activity per day with open time. Check entry rules, weather, transport, cancellation terms, and keep key documents available offline.' },
-            { match: ['career', 'job', 'interview', 'resume', 'work'], text: 'Make your value concrete: describe the problem, the action you took, and the measurable result. That structure works for resumes, interviews, and performance conversations.' },
-            { match: ['explain', 'how', 'what'], text: 'Absolutely. Tell me the topic and your preferred depth: quick intuition, a clear example, or the full deep dive.' },
-            { match: ['hello', 'hi', 'hey'], text: 'Hello! What are we figuring out today?' }
+        const knowledge = [
+            { keywords: ['plan', 'day', 'organize', 'schedule'], answer: 'Start with one must-do, two should-dos, and one small thing that makes the day feel good. Give the must-do a focused 25-minute block, then reassess.' },
+            { keywords: ['idea', 'creative', 'inspiration'], answer: 'Combine two unrelated interests. A quiet coffee shop plus a walking tour, for example, becomes a self-guided “sip and stroll” afternoon.' },
+            { keywords: ['code', 'coding', 'javascript', 'python', 'html', 'bug', 'program'], answer: 'Debug it in five steps: reproduce the issue, reduce it to the smallest case, inspect actual values, change one thing, and test again. Include the error and relevant code for a precise diagnosis.' },
+            { keywords: ['study', 'learn', 'exam', 'school', 'homework'], answer: 'Use active recall: close your notes, explain the idea from memory, check the gaps, and revisit them later. Short spaced sessions usually beat one long reread.' },
+            { keywords: ['write', 'writing', 'essay', 'email', 'grammar'], answer: 'Lead with the point your reader needs. Use concrete examples, remove repeated words, and end with one clear next step.' },
+            { keywords: ['health', 'exercise', 'sleep', 'food', 'diet'], answer: 'For general wellbeing, focus on sustainable sleep, movement, nourishing food, and hydration. For symptoms or medical decisions, use a qualified clinician rather than treating this as a diagnosis.' },
+            { keywords: ['money', 'budget', 'save', 'invest', 'finance'], answer: 'Map monthly income, fixed costs, flexible spending, and an emergency buffer before making a plan. Investing and tax rules depend on your situation, so verify them with a qualified professional.' },
+            { keywords: ['science', 'physics', 'chemistry', 'biology', 'space'], answer: 'Science builds testable explanations, compares them with evidence, and updates conclusions when evidence changes. Give me the exact topic and I’ll explain it from intuition to detail.' },
+            { keywords: ['travel', 'trip', 'flight', 'hotel', 'visit'], answer: 'Plan one anchor activity per day and leave open time around it. Check entry rules, weather, transport, cancellation terms, and keep important documents offline.' },
+            { keywords: ['career', 'job', 'interview', 'resume', 'work'], answer: 'Make your value concrete: describe the problem, the action you took, and the measurable result. That structure works for resumes, interviews, and performance conversations.' }
         ];
 
+        function getSubject(message) {
+            return message.replace(/^(can you|could you|please|help me|tell me|explain|what is|what are|how do i|how can i|why does|why is)\\s+/i, '').replace(/[?!.]+$/, '').trim().slice(0, 90);
+        }
+
         function getReply(message) {
-            const words = message.toLowerCase();
-            const found = replies.find(reply => reply.match.some(word => new RegExp(`\\b${word}\\b`, 'i').test(words)));
-            return found ? found.text : 'That’s a good place to start. Break it into the smallest next step you can take in ten minutes, then tell me what you find.';
+            const words = message.toLowerCase().trim();
+            const subject = getSubject(message);
+            if (/^(hi|hello|hey)\\b/.test(words)) return 'Hello. What would you like to solve, understand, or create today?';
+            if (/^(thanks|thank you|thx)\\b/.test(words)) return 'You’re welcome. Send the next detail whenever you’re ready.';
+            const topic = knowledge.find(entry => entry.keywords.some(keyword => new RegExp(`\\b${keyword}\\b`, 'i').test(words)));
+            if (topic && /\\b(what is|what are|define|meaning)\\b/.test(words)) return `In simple terms, ${subject || 'that topic'} is something best understood by its purpose and an example. ${topic.answer}`;
+            if (topic && /\\b(how|can i|steps|way to|help)\\b/.test(words)) return `Here is a practical approach for ${subject || 'that'}: ${topic.answer}`;
+            if (topic) return topic.answer;
+            if (/\\?$/.test(message.trim())) return `I understand you’re asking about “${subject || 'that'}”. The answer depends on your goal and constraints. Tell me what outcome you want, what you’ve tried, and any limits such as time, budget, or tools.`;
+            return `I’m following you on “${subject || message.trim()}”. Turn it into one clear outcome and one next action. Share the context or the result you want, and I’ll help you work through it step by step.`;
         }
 
         function addMessage(text, type) {
