@@ -268,7 +268,7 @@
             installDialog.showModal();
         });
         document.querySelector('#close-install').addEventListener('click', () => installDialog.close());
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(registration => registration.update());
         clearButton.addEventListener('click', () => {
             messages.innerHTML = '<div class="message bot"><div class="bubble">Fresh page, fresh thoughts. What would you like to work through?</div><span class="time">just now</span></div>';
             input.focus();
