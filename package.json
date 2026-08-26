@@ -1,0 +1,19 @@
+{
+  "name": "apex-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "APEX local chat bot packaged for Android",
+  "scripts": {
+    "android:add": "cap add android",
+    "android:sync": "cap sync android",
+    "android:open": "cap open android",
+    "android:build": "cd android && gradle assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
+  }
+}

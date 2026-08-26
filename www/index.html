@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX | Your pocket bot</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root {
+            --ink: #152320;
+            --muted: #6c7b76;
+            --paper: #f3f5ef;
+            --panel: #ffffff;
+            --line: #dfe6df;
+            --lime: #c7f36b;
+            --green: #216b54;
+            --shadow: 0 24px 70px rgba(33, 64, 53, .12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body::before {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            content: '';
+            opacity: .45;
+            background-image: linear-gradient(rgba(33, 107, 84, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(33, 107, 84, .06) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, black, transparent 75%);
+        }
+
+        .shell {
+            width: min(1180px, calc(100% - 40px));
+            min-height: 100vh;
+            margin: auto;
+            padding: 28px 0;
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+
+        header { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 24px; }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 1.05rem; font-weight: 700; letter-spacing: -.03em; }
+        .mark { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; background: var(--ink); color: var(--lime); font-size: 1.2rem; transform: rotate(-8deg); }
+        .status { display: flex; align-items: center; gap: 8px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
+        .status::before { width: 7px; height: 7px; border-radius: 50%; background: #57c68b; box-shadow: 0 0 0 4px rgba(87, 198, 139, .15); content: ''; }
+
+        main { min-height: 0; display: grid; grid-template-columns: minmax(220px, .7fr) minmax(0, 1.5fr); gap: 22px; }
+        .intro { padding: clamp(24px, 5vw, 64px) clamp(4px, 3vw, 28px); }
+        .eyebrow { margin: 0 0 18px; color: var(--green); font-family: 'DM Mono', monospace; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; }
+        h1 { max-width: 420px; margin: 0; font-size: clamp(2.7rem, 6vw, 5.8rem); line-height: .91; letter-spacing: -.075em; }
+        .intro p { max-width: 320px; margin: 28px 0 0; color: var(--muted); font-size: 1rem; line-height: 1.55; }
+        .shortcut { margin-top: 52px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: .68rem; line-height: 1.8; text-transform: uppercase; }
+        .shortcut span { color: var(--ink); }
+
+        .chat { min-height: 620px; align-self: center; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; border: 1px solid rgba(33, 64, 53, .09); border-radius: 24px; background: var(--panel); box-shadow: var(--shadow); }
+        .chat-top { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px; border-bottom: 1px solid var(--line); }
+        .bot-info { display: flex; align-items: center; gap: 12px; }
+        .bot-avatar { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 13px; background: var(--lime); font-size: 1.2rem; }
+        .bot-name { margin: 0; font-size: .95rem; font-weight: 700; }
+        .bot-role { margin: 3px 0 0; color: var(--muted); font-family: 'DM Mono', monospace; font-size: .66rem; }
+        .clear { border: 0; background: transparent; color: var(--muted); cursor: pointer; font: 500 .7rem 'DM Mono', monospace; text-transform: uppercase; }
+        .clear:hover { color: var(--ink); }
+
+        .messages { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; padding: 26px 22px; }
+        .message { max-width: 78%; display: flex; flex-direction: column; gap: 6px; animation: rise .35s ease both; }
+        .message.user { align-self: flex-end; align-items: flex-end; }
+        .message.bot { align-self: flex-start; }
+        .bubble { padding: 13px 16px; border-radius: 16px 16px 16px 4px; background: #edf2ed; font-size: .9rem; line-height: 1.5; }
+        .user .bubble { border-radius: 16px 16px 4px 16px; background: var(--ink); color: white; }
+        .time { color: #a0aaa5; font-family: 'DM Mono', monospace; font-size: .6rem; }
+        .typing { display: none; align-items: center; gap: 4px; width: fit-content; padding: 13px 16px; border-radius: 16px 16px 16px 4px; background: #edf2ed; }
+        .typing.visible { display: flex; }
+        .typing i { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: blink 1s infinite; }
+        .typing i:nth-child(2) { animation-delay: .15s; }
+        .typing i:nth-child(3) { animation-delay: .3s; }
+        .composer { padding: 14px 16px 16px; border-top: 1px solid var(--line); }
+        .suggestions { display: flex; gap: 7px; overflow-x: auto; padding: 0 0 13px; scrollbar-width: none; }
+        .suggestions::-webkit-scrollbar { display: none; }
+        .suggestion { flex: 0 0 auto; padding: 8px 11px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: transparent; cursor: pointer; font: .68rem 'DM Mono', monospace; }
+        .suggestion:hover { border-color: var(--green); color: var(--green); }
+        form { display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 15px; border: 1px solid var(--line); border-radius: 13px; }
+        input { min-width: 0; flex: 1; border: 0; outline: 0; color: var(--ink); background: transparent; font: .9rem 'Space Grotesk', sans-serif; }
+        input::placeholder { color: #a4afaa; }
+        .send { width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 9px; background: var(--lime); color: var(--ink); cursor: pointer; font-size: 1.1rem; transition: transform .2s, background .2s; }
+        .send:hover { background: #b4e358; transform: translateY(-2px); }
+
+        @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes blink { 0%, 80%, 100% { opacity: .25; transform: scale(.8); } 40% { opacity: 1; transform: scale(1); } }
+        @media (max-width: 760px) {
+            .shell { width: min(100% - 28px, 560px); padding-top: 18px; }
+            header { padding-bottom: 12px; }
+            main { display: block; }
+            .intro { padding: 30px 4px 26px; }
+            h1 { font-size: clamp(3.1rem, 15vw, 5rem); }
+            .intro p, .shortcut { display: none; }
+            .chat { min-height: 590px; height: calc(100vh - 190px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <header>
+            <div class="brand"><span class="mark">✦</span> APEX</div>
+            <div class="status">Local bot / online</div>
+        </header>
+        <main>
+            <section class="intro">
+                <p class="eyebrow">A little help, on demand</p>
+                <h1>Ask better.<br>Move faster.</h1>
+                <p>APEX is your pocket-sized thinking partner for ideas, plans, and the occasional stuck moment.</p>
+                <div class="shortcut"><span>Enter</span> to send<br><span>Shift + Enter</span> for a new line</div>
+            </section>
+            <section class="chat" aria-label="Chat with APEX">
+                <div class="chat-top">
+                    <div class="bot-info"><div class="bot-avatar">✦</div><div><p class="bot-name">APEX</p><p class="bot-role">Your practical thinking partner</p></div></div>
+                    <button class="clear" type="button" id="clear-chat">Clear chat</button>
+                </div>
+                <div class="messages" id="messages" aria-live="polite">
+                    <div class="message bot"><div class="bubble">Hey, I’m APEX. Bring me a question, a rough idea, or a small problem. We’ll make it clearer together.</div><span class="time">just now</span></div>
+                </div>
+                <div class="composer">
+                    <div class="suggestions"><button class="suggestion" type="button">Help me plan my day</button><button class="suggestion" type="button">Give me an idea</button><button class="suggestion" type="button">Explain something</button></div>
+                    <form id="chat-form"><input id="message-input" autocomplete="off" placeholder="Type a message..." aria-label="Message APEX"><button class="send" aria-label="Send message" type="submit">↗</button></form>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        const form = document.querySelector('#chat-form');
+        const input = document.querySelector('#message-input');
+        const messages = document.querySelector('#messages');
+        const clearButton = document.querySelector('#clear-chat');
+        const suggestions = document.querySelectorAll('.suggestion');
+
+        const replies = [
+            { match: ['plan', 'day', 'organize'], text: 'Let’s keep it simple: choose one must-do, two should-dos, and one small thing that makes the day feel good. What is your must-do?' },
+            { match: ['idea', 'creative', 'inspiration'], text: 'Try combining two unrelated things you like. For example: a quiet coffee shop and a walking tour becomes a self-guided “sip and stroll” afternoon.' },
+            { match: ['explain', 'how', 'what'], text: 'Absolutely. Tell me the topic and your preferred depth: quick intuition, a clear example, or the full deep dive.' },
+            { match: ['hello', 'hi', 'hey'], text: 'Hello! What are we figuring out today?' }
+        ];
+
+        function getReply(message) {
+            const words = message.toLowerCase();
+            const found = replies.find(reply => reply.match.some(word => words.includes(word)));
+            return found ? found.text : 'That’s a good place to start. Break it into the smallest next step you can take in ten minutes, then tell me what you find.';
+        }
+
+        function addMessage(text, type) {
+            const item = document.createElement('div');
+            item.className = `message ${type}`;
+            item.innerHTML = `<div class="bubble"></div><span class="time">just now</span>`;
+            item.querySelector('.bubble').textContent = text;
+            messages.appendChild(item);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function showReply(text) {
+            const typing = document.createElement('div');
+            typing.className = 'typing visible';
+            typing.innerHTML = '<i></i><i></i><i></i>';
+            messages.appendChild(typing);
+            messages.scrollTop = messages.scrollHeight;
+            window.setTimeout(() => { typing.remove(); addMessage(text, 'bot'); }, 650);
+        }
+
+        function sendMessage(text) {
+            const cleanText = text.trim();
+            if (!cleanText) return;
+            addMessage(cleanText, 'user');
+            input.value = '';
+            showReply(getReply(cleanText));
+        }
+
+        form.addEventListener('submit', event => { event.preventDefault(); sendMessage(input.value); });
+        suggestions.forEach(button => button.addEventListener('click', () => sendMessage(button.textContent)));
+        clearButton.addEventListener('click', () => {
+            messages.innerHTML = '<div class="message bot"><div class="bubble">Fresh page, fresh thoughts. What would you like to work through?</div><span class="time">just now</span></div>';
+            input.focus();
+        });
+    </script>
+</body>
+</html>
