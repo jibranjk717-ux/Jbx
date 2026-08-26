@@ -1,0 +1,15 @@
+{
+  "name": "ApeX - Your pocket bot",
+  "short_name": "ApeX",
+  "start_url": "/Jbx/",
+  "display": "standalone",
+  "background_color": "#eef3ed",
+  "theme_color": "#101a18",
+  "description": "A practical thinking partner for ideas, plans, and everyday questions.",
+  "icons": [{
+    "src": "icon.svg",
+    "sizes": "any",
+    "type": "image/svg+xml",
+    "purpose": "any maskable"
+  }]
+}

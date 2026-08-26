@@ -3,19 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APEX | Your pocket bot</title>
+    <title>ApeX | Your pocket bot</title>
+    <meta name="description" content="ApeX is a practical AI thinking partner for ideas, plans, and everyday questions.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://jibranjk717-ux.github.io/Jbx/">
+    <meta property="og:title" content="ApeX | Your pocket bot">
+    <meta property="og:description" content="A practical AI thinking partner for ideas, plans, and everyday questions.">
+    <meta property="og:url" content="https://jibranjk717-ux.github.io/Jbx/">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#101a18">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
         :root {
-            --ink: #152320;
-            --muted: #6c7b76;
-            --paper: #f3f5ef;
+            --ink: #101a18;
+            --muted: #687874;
+            --paper: #eef3ed;
             --panel: #ffffff;
             --line: #dfe6df;
-            --lime: #c7f36b;
-            --green: #216b54;
-            --shadow: 0 24px 70px rgba(33, 64, 53, .12);
+            --lime: #d7ff5f;
+            --green: #17735b;
+            --coral: #ff806d;
+            --shadow: 0 24px 70px rgba(16, 48, 38, .15);
         }
 
         * { box-sizing: border-box; }
@@ -24,7 +35,7 @@
             margin: 0;
             min-height: 100vh;
             color: var(--ink);
-            background: var(--paper);
+            background: radial-gradient(circle at 82% 8%, rgba(215, 255, 95, .42), transparent 27rem), var(--paper);
             font-family: 'Space Grotesk', sans-serif;
         }
 
@@ -50,9 +61,13 @@
 
         header { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 24px; }
         .brand { display: flex; align-items: center; gap: 12px; font-size: 1.05rem; font-weight: 700; letter-spacing: -.03em; }
-        .mark { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; background: var(--ink); color: var(--lime); font-size: 1.2rem; transform: rotate(-8deg); }
+        .mark { width: 38px; height: 38px; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 13px; background: var(--lime); color: var(--ink); transform: rotate(-8deg); box-shadow: 4px 4px 0 var(--coral); }
+        .mark svg { width: 23px; height: 23px; }
         .status { display: flex; align-items: center; gap: 8px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
         .status::before { width: 7px; height: 7px; border-radius: 50%; background: #57c68b; box-shadow: 0 0 0 4px rgba(87, 198, 139, .15); content: ''; }
+        .install-button { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; margin-right: 20px; padding: 10px 13px; border: 1px solid var(--ink); border-radius: 10px; background: var(--ink); color: white; cursor: pointer; font: 500 .7rem 'DM Mono', monospace; text-transform: uppercase; transition: transform .2s, background .2s; }
+        .install-button:hover { background: var(--green); transform: translateY(-2px); }
+        .install-button svg { width: 15px; height: 15px; }
 
         main { min-height: 0; display: grid; grid-template-columns: minmax(220px, .7fr) minmax(0, 1.5fr); gap: 22px; }
         .intro { padding: clamp(24px, 5vw, 64px) clamp(4px, 3vw, 28px); }
@@ -65,7 +80,7 @@
         .chat { min-height: 620px; align-self: center; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; border: 1px solid rgba(33, 64, 53, .09); border-radius: 24px; background: var(--panel); box-shadow: var(--shadow); }
         .chat-top { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px; border-bottom: 1px solid var(--line); }
         .bot-info { display: flex; align-items: center; gap: 12px; }
-        .bot-avatar { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 13px; background: var(--lime); font-size: 1.2rem; }
+        .bot-avatar { width: 40px; height: 40px; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 13px; background: var(--lime); font-size: 1.2rem; transform: rotate(8deg); }
         .bot-name { margin: 0; font-size: .95rem; font-weight: 700; }
         .bot-role { margin: 3px 0 0; color: var(--muted); font-family: 'DM Mono', monospace; font-size: .66rem; }
         .clear { border: 0; background: transparent; color: var(--muted); cursor: pointer; font: 500 .7rem 'DM Mono', monospace; text-transform: uppercase; }
@@ -93,12 +108,22 @@
         input::placeholder { color: #a4afaa; }
         .send { width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 9px; background: var(--lime); color: var(--ink); cursor: pointer; font-size: 1.1rem; transition: transform .2s, background .2s; }
         .send:hover { background: #b4e358; transform: translateY(-2px); }
+        dialog { width: min(390px, calc(100% - 32px)); padding: 0; border: 1px solid var(--ink); border-radius: 18px; color: var(--ink); background: var(--panel); box-shadow: var(--shadow); }
+        dialog::backdrop { background: rgba(16, 26, 24, .45); backdrop-filter: blur(4px); }
+        .install-panel { padding: 25px; }
+        .install-panel h2 { margin: 0 0 8px; font-size: 1.35rem; letter-spacing: -.04em; }
+        .install-panel p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.5; }
+        .install-panel ol { margin: 18px 0 22px; padding-left: 20px; color: var(--muted); font-size: .84rem; line-height: 1.8; }
+        .install-panel strong { color: var(--ink); }
+        .close-install { width: 100%; padding: 11px; border: 0; border-radius: 9px; background: var(--lime); color: var(--ink); cursor: pointer; font: 600 .75rem 'DM Mono', monospace; text-transform: uppercase; }
 
         @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes blink { 0%, 80%, 100% { opacity: .25; transform: scale(.8); } 40% { opacity: 1; transform: scale(1); } }
         @media (max-width: 760px) {
             .shell { width: min(100% - 28px, 560px); padding-top: 18px; }
             header { padding-bottom: 12px; }
+            .install-button { margin-right: 10px; padding: 9px; }
+            .install-button span { display: none; }
             main { display: block; }
             .intro { padding: 30px 4px 26px; }
             h1 { font-size: clamp(3.1rem, 15vw, 5rem); }
@@ -110,37 +135,43 @@
 <body>
     <div class="shell">
         <header>
-            <div class="brand"><span class="mark">✦</span> APEX</div>
+            <div class="brand"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5 14.6 9.4 21.5 12l-6.9 2.6L12 21.5l-2.6-6.9L2.5 12l6.9-2.6L12 2.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg></span> ApeX</div>
+            <button class="install-button" id="install-app" type="button" aria-label="Install ApeX app"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Install app</span></button>
             <div class="status">Local bot / online</div>
         </header>
         <main>
             <section class="intro">
                 <p class="eyebrow">A little help, on demand</p>
                 <h1>Ask better.<br>Move faster.</h1>
-                <p>APEX is your pocket-sized thinking partner for ideas, plans, and the occasional stuck moment.</p>
+                <p>ApeX is your pocket-sized thinking partner for ideas, plans, and the occasional stuck moment.</p>
                 <div class="shortcut"><span>Enter</span> to send<br><span>Shift + Enter</span> for a new line</div>
             </section>
-            <section class="chat" aria-label="Chat with APEX">
+            <section class="chat" aria-label="Chat with ApeX">
                 <div class="chat-top">
-                    <div class="bot-info"><div class="bot-avatar">✦</div><div><p class="bot-name">APEX</p><p class="bot-role">Your practical thinking partner</p></div></div>
+                    <div class="bot-info"><div class="bot-avatar">✦</div><div><p class="bot-name">ApeX</p><p class="bot-role">Your practical thinking partner</p></div></div>
                     <button class="clear" type="button" id="clear-chat">Clear chat</button>
                 </div>
                 <div class="messages" id="messages" aria-live="polite">
-                    <div class="message bot"><div class="bubble">Hey, I’m APEX. Bring me a question, a rough idea, or a small problem. We’ll make it clearer together.</div><span class="time">just now</span></div>
+                    <div class="message bot"><div class="bubble">Hey, I’m ApeX. Bring me a question, a rough idea, or a small problem. We’ll make it clearer together.</div><span class="time">just now</span></div>
                 </div>
                 <div class="composer">
                     <div class="suggestions"><button class="suggestion" type="button">Help me plan my day</button><button class="suggestion" type="button">Give me an idea</button><button class="suggestion" type="button">Explain something</button></div>
-                    <form id="chat-form"><input id="message-input" autocomplete="off" placeholder="Type a message..." aria-label="Message APEX"><button class="send" aria-label="Send message" type="submit">↗</button></form>
+                    <form id="chat-form"><input id="message-input" autocomplete="off" placeholder="Type a message..." aria-label="Message ApeX"><button class="send" aria-label="Send message" type="submit">↗</button></form>
                 </div>
             </section>
         </main>
     </div>
+    <dialog id="install-dialog" aria-labelledby="install-title"><div class="install-panel"><h2 id="install-title">Take ApeX with you</h2><p id="install-copy">Install the app for a faster, full-screen experience.</p><ol id="install-steps"></ol><button class="close-install" id="close-install" type="button">Maybe later</button></div></dialog>
     <script>
         const form = document.querySelector('#chat-form');
         const input = document.querySelector('#message-input');
         const messages = document.querySelector('#messages');
         const clearButton = document.querySelector('#clear-chat');
         const suggestions = document.querySelectorAll('.suggestion');
+        const installButton = document.querySelector('#install-app');
+        const installDialog = document.querySelector('#install-dialog');
+        const installSteps = document.querySelector('#install-steps');
+        let deferredInstall;
 
         const replies = [
             { match: ['plan', 'day', 'organize'], text: 'Let’s keep it simple: choose one must-do, two should-dos, and one small thing that makes the day feel good. What is your must-do?' },
@@ -183,6 +214,20 @@
 
         form.addEventListener('submit', event => { event.preventDefault(); sendMessage(input.value); });
         suggestions.forEach(button => button.addEventListener('click', () => sendMessage(button.textContent)));
+        window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); deferredInstall = event; });
+        installButton.addEventListener('click', async () => {
+            if (deferredInstall) {
+                deferredInstall.prompt();
+                await deferredInstall.userChoice;
+                deferredInstall = null;
+                return;
+            }
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            installSteps.innerHTML = isIOS ? '<li>Tap the <strong>Share</strong> button in Safari.</li><li>Choose <strong>Add to Home Screen</strong>.</li><li>Tap <strong>Add</strong> to finish.</li>' : '<li>Open your browser menu.</li><li>Choose <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li><li>Confirm the installation.</li>';
+            installDialog.showModal();
+        });
+        document.querySelector('#close-install').addEventListener('click', () => installDialog.close());
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
         clearButton.addEventListener('click', () => {
             messages.innerHTML = '<div class="message bot"><div class="bubble">Fresh page, fresh thoughts. What would you like to work through?</div><span class="time">just now</span></div>';
             input.focus();
