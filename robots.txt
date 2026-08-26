@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jibranjk717-ux.github.io/Jbx/sitemap.xml
